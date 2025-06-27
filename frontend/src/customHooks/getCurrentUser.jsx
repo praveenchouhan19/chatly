@@ -22,6 +22,8 @@ const useCurrentUser = () => {
 
     fetchUser();
   }, [dispatch]);
+
+  return null; // Return null since this is a custom hook
 };
 
 export default useCurrentUser;

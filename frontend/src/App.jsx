@@ -1,14 +1,13 @@
-import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import useCurrentUser from './customHooks/getCurrentUser.jsx';
 import { useSelector } from 'react-redux';
-import Login from './pages/Login';
-import SignUp from './pages/SignUp';
-import Home from './pages/Home';
-import Profile from './pages/Profile';
+import Login from './pages/login.jsx';
+import SignUp from './pages/SignUp.jsx';
+import Home from './pages/Home.jsx';
+import Profile from './pages/Profile.jsx';
 
 function App() {
-  useCurrentUser(); // custom hook to fetch user data
+  useCurrentUser();
 
   const userData = useSelector(state => state.user);
 
