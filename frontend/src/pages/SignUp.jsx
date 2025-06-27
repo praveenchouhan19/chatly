@@ -4,7 +4,6 @@ import axios from 'axios';
 import { serverUrl } from '../main';
 import {useDispatch, useSelector} from 'react-redux'
 import { setUserData } from '../redux/userSlice';
-
 function SignUp() {
   const navigate = useNavigate();
   const [show, setShow] = useState(false);

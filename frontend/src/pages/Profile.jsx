@@ -1,6 +1,5 @@
-import React from 'react'
 import dp from '../assets/dp.webp'
-function Profile() {
+export default function Profile() {
   return (
     <div className="w-full h-[100vh] bg-slate-200 flex flex-col justify-center items-center">
       <div className="w-[200px] h-[200px] bg-white rounded-full border-4 border-[#20c7ff] shadow-gray-400 shadow-lg overflow-hidden">
