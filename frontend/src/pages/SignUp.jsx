@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { serverUrl } from '../main';
+import {useDispatch, useSelector} from 'react-redux'
+import { setUserData } from '../redux/userSlice';
 
 function SignUp() {
   const navigate = useNavigate();
@@ -9,9 +11,12 @@ function SignUp() {
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState(false);
+  const dispatch = useDispatch()
   const handleSignUp = async (e) => {
     e.preventDefault();
+    setLoading(true)
     try {
       const result = await axios.post(`${serverUrl}/api/auth/signup`, {
         userName,
@@ -20,12 +25,16 @@ function SignUp() {
       }, {
         withCredentials: true,
       });
-
-      console.log("Signup success:", result.data);
-      // Optionally navigate to login or home
-      // navigate("/login");
+      dispatch(setUserData(result.data))
+      console.log("Signup success:", result.data); //remove
+      setEmail("")
+      setPassword("")
+      setLoading(false)
+      setErr("")
     } catch (error) {
       console.error("Signup error:", error.response?.data || error.message);
+      setLoading(false)
+      setErr(error?.response?.data?.message)
     }
   };
 
@@ -70,12 +79,13 @@ function SignUp() {
               {show ? "hide" : "show"}
             </span>
           </div>
-
+          {err && <p className='text-red-500'>{"*"+err}</p>}
           <button
             type="submit"
             className="px-[20px] py-[10px] bg-[#20c7ff] rounded-2xl shadow-gray-400 shadow-lg text-[20px] w-[200px] mt-[20px] font-semibold hover:shadow-inner"
+            disabled={loading}
           >
-            Sign Up
+            {loading?"Loading...":"Sign Up"}
           </button>
 
           <p className="cursor-pointer" onClick={() => navigate("/login")}>
