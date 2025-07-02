@@ -9,7 +9,7 @@ import Profile from './pages/Profile.jsx';
 function App() {
   useCurrentUser();
 
-  const userData = useSelector(state => state.user);
+  const {userData} = useSelector(state => state.user);
 
   return (
     <Routes>

@@ -80,7 +80,6 @@ function SignUp() {
           </div>
           {err && <p className='text-red-500'>{"*"+err}</p>}
           <button
-            type="submit"
             className="px-[20px] py-[10px] bg-[#20c7ff] rounded-2xl shadow-gray-400 shadow-lg text-[20px] w-[200px] mt-[20px] font-semibold hover:shadow-inner"
             disabled={loading}
           >
