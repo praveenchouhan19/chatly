@@ -25,7 +25,8 @@ function Login() {
         withCredentials: true,
       });
       dispatch(setUserData(result.data))
-      console.log("Loginup success:", result.data);
+      console.log("Loginup success:", result.data)
+      navigate("/");
       setEmail("")
       setPassword("")
       setLoading(false)

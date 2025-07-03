@@ -5,6 +5,7 @@ import authRouter from "./routes/auth.routes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import userRouter from "./routes/user.routes.js";
+import { upload } from "./middlewares/multer.js";
 
 dotenv.config();
 

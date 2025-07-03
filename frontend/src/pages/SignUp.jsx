@@ -26,6 +26,7 @@ function SignUp() {
       });
       dispatch(setUserData(result.data))
       console.log("Signup success:", result.data); //remove
+      navigate("/profile");
       setEmail("")
       setPassword("")
       setLoading(false)

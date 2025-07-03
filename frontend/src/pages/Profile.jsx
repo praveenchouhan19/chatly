@@ -38,6 +38,7 @@ function Profile() {
       let result = await axios.post(`${serverUrl}/api/user/profile`,formData, {withCredentials: true});
       setSaving(false);
       dispatch(setUserData(result.data));
+      navigate("/");
     // } catch (error) {
     //   console.error("Profile update error:", error);
     //   setSaving(false);

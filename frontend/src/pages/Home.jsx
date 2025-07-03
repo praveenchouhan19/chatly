@@ -1,11 +1,15 @@
 import React from 'react'
-export default function Home() {
+import SideBar from '../components/SideBar';
+import MessageArea from '../components/MessageArea';
+  function Home() {
   return (
-    <div >
-        <p
-        className='text-3xl font-bold underline text-center mt-10 text-blue-500'
-        >Home</p>
-      
+    <div className='w-full h-[100vh] flex'>
+      <SideBar/>
+      <MessageArea/>
+        
     </div>
   );
 }
+
+export default  Home
+ 
