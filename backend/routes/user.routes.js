@@ -7,7 +7,6 @@ const userRouter = express.Router();
 
 userRouter.get("/current", isAuth, getCurrentUser);
 userRouter.get("/others", isAuth, getOtherUsers);
-console.log("User router initialized");
 userRouter.post("/profile", isAuth, upload.single("image"), editProfile);
 
 export default userRouter;
