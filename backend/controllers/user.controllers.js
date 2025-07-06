@@ -98,3 +98,28 @@ export const getOtherUsers = async (req, res) => {
   }
 };
 
+export const search = async(req, res)=>{
+  try {
+    const { query } = req.query;
+
+    if (!query) {
+      return res.status(400).json({ message: "Query is required" });
+    }
+
+    const users = await User.find({
+      $or: [
+        { name: { $regex: query, $options: "i" } },
+        { userName: { $regex: query, $options: "i" } },
+      ],
+    });
+
+    return res.status(200).json(users);
+    
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: `search user error ${error}` });
+  
+  }
+}
+
