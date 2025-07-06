@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { serverUrl } from '../main';
 import {useDispatch, useSelector} from 'react-redux'
-import { setUserData } from '../redux/userSlice';
+import { setSelectedUser, setUserData } from '../redux/userSlice';
 
 function Login() {
 
@@ -25,6 +25,7 @@ function Login() {
         withCredentials: true,
       });
       dispatch(setUserData(result.data))
+      dispatch(setSelectedUser(null))
       console.log("Loginup success:", result.data)
       navigate("/");
       setEmail("")

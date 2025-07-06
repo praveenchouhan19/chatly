@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { IoIosArrowRoundBack } from "react-icons/io";
 import dp from '../assets/dp.webp';
 import { useNavigate } from 'react-router-dom';
@@ -14,15 +14,25 @@ import SenderMessage from './SenderMessage';
 import ReceiverMessage from './ReceiverMessage';
 import axios from 'axios';
 import { serverUrl } from '../main';
+import { setMessages } from '../redux/messageSlice';
 
 function MessageArea() {
-    let {selectedUser} = useSelector(state => state.user);
+    let {selectedUser, userData, socket} = useSelector(state => state.user);
     let dispatch = useDispatch();
     let [showPicker, setShowPicker] = useState(false);
     let [input, setInput] = useState("");
     let [frontendImage, setFrontendImage] = useState(null);
     let [backendImage, setBackendImage] = useState(null);
     let image = React.useRef(null);
+    let messagesEndRef = React.useRef(null); // ✅ THIS LINE
+
+  let messages = useSelector(state => state.message?.messages) || [];
+
+    React.useEffect(() => {
+  if (messagesEndRef.current) {
+    messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+  }
+}, [messages]);
 
     const handleImage = (e) => {
       let file = e.target.files[0];
@@ -30,9 +40,11 @@ function MessageArea() {
       setFrontendImage(URL.createObjectURL(file));
         
     }
-
     const handleSendMessage = async (e) => {
       e.preventDefault();
+      if(input.length==0 && backendImage==null){
+        return
+      }
       try {
         let formData = new FormData();
         formData.append("message", input);
@@ -46,7 +58,11 @@ function MessageArea() {
           formData,
           { withCredentials: true }
         )
-        console.log(result.data);
+        dispatch(setMessages([...messages, result.data]));
+        console.log("Updated messages:", [...messages, result.data]);
+        setInput("");
+        setFrontendImage(null);
+        setBackendImage(null);
       } catch (error) {
         console.error("Error sending message:", error);
       }
@@ -56,6 +72,14 @@ function MessageArea() {
         setInput(prevInput => prevInput + emojiData.emoji);
         setShowPicker(false);
     }
+
+    useEffect(()=>{
+      socket.on("newMessage",(mess)=>{
+        dispatch(setMessages([...messages, mess]))
+      })
+      return ()=> socket.off("newMessage")
+    },[messages, setMessages])
+
   return (
     <div className={`lg:w-[70%] relative ${selectedUser?"flex":"hidden"} lg:flex w-full h-full bg-slate-200 border-l-2 border-gray-300`}>
       
@@ -77,14 +101,35 @@ function MessageArea() {
             <h1 className="text-white font-semibold text-[20px]">{selectedUser?.name || "user"}</h1>
           </div>
 
-          <div className='w-full h-[550px] flex flex-col py-[30px] px-[20px] overflow-auto'>
-            {showPicker && 
-              <div className='absolute bottom-[120px] left-[20px]'>
-                  <EmojiPicker width={250} height={350} className='shadow-lg'
-                    onEmojiClick={onEmojiClick}/>
-              </div>}
-            
-          </div>
+                      <div className="w-full h-[70%] flex flex-col py-[50px] px-[20px] overflow-auto gap-[20px]">
+              {showPicker && (
+                <div className="absolute bottom-[120px] left-[20px] z-[100]">
+                  <EmojiPicker
+                    width={250}
+                    height={350}
+                    className="shadow-lg"
+                    onEmojiClick={onEmojiClick}
+                  />
+                </div>
+              )}
+              {messages && messages?.map((mess) =>
+  mess.sender === userData._id ? (
+    <SenderMessage
+      key={mess._id} // ✅ ADD THIS
+      image={mess.image}
+      message={mess.message}
+    />
+  ) : (
+    <ReceiverMessage
+      key={mess._id} // ✅ ADD THIS
+      image={mess.image}
+      message={mess.message}
+    />
+  )
+)}
+
+              <div ref={messagesEndRef} />
+            </div>
         </div>}
         {!selectedUser && (
             <div className="w-full h-full flex flex-col justify-center items-center">
@@ -110,9 +155,12 @@ function MessageArea() {
               <div onClick={() => image.current.click()}>
                 <FaRegImage className='w-[25px] h-[25px] text-white cursor-pointer'/>
               </div>
-              <button>
-                <MdSend className='w-[25px] h-[25px] text-white cursor-pointer'/>
-              </button>
+              {(input.length>0 || backendImage!=null) && 
+                (<button>
+                  <MdSend className='w-[25px] h-[25px] text-white cursor-pointer'/>
+                </button>)
+              }
+              
               
               
             </form>
